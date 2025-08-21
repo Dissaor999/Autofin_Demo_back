@@ -10,10 +10,18 @@ class DetalleFacturaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $detalles = detalleFactura::all();
-        return response()->json($detalles, 200);
+        $detalles = detalleFactura::query()->paginate($request->input('perPage', 10));
+
+        // Obtén el número total de registros.
+        $total = $detalles->total();
+        
+        // Retorna la respuesta JSON y agrega el encabezado.
+        return response()->json($detalles->items())
+            ->header('X-Total-Count', $total);
+        // $detalles = detalleFactura::all();
+        // return $detalles;
     }
 
     

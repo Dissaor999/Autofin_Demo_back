@@ -10,10 +10,16 @@ class ProductoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $productos = producto::all();
-        return response()->json($productos);
+        $productos = producto::query()->paginate($request->input('perPage', 10));
+
+        // Obtén el número total de registros.
+        $total = $productos->total();
+        
+        // Retorna la respuesta JSON y agrega el encabezado.
+        return response()->json($productos->items())
+            ->header('X-Total-Count', $total);
     }
 
     

@@ -10,10 +10,18 @@ class clienteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clients = Cliente::all();
-        return $clients;
+        $clients = Cliente::query()->paginate($request->input('perPage', 10));
+
+        // Obtén el número total de registros.
+        $total = $clients->total();
+        
+        // Retorna la respuesta JSON y agrega el encabezado.
+        return response()->json($clients->items())
+            ->header('X-Total-Count', $total);
+        // $clients = Cliente::all();
+        // return $clients;
     }
 
     /**
